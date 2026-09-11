@@ -1,41 +1,25 @@
 # Coin Waw News Bot
 
-A lightweight starter RSS collector for Coin Waw.
+A lightweight Python RSS collector for the Coin Waw financial-news project.
 
-## Purpose
+## What it does
 
-The bot collects publicly available RSS article metadata and stores it as structured JSON.
+The current version:
 
-It is designed as a starting point for a larger financial-news pipeline.
+- reads configured RSS feeds
+- collects article metadata
+- removes duplicate URLs
+- classifies stories as crypto, stocks, macro, finance, or markets
+- assigns a simple 1–5 impact score
+- detects a small set of market assets
+- saves structured records to `data/news.json`
+- prints the highest-scoring stories
 
-## Current Features
-
-- RSS feed collection
-- URL-based duplicate detection
-- Basic keyword categorization
-- JSON output
-- Source attribution
-- Configurable feeds
-
-## Architecture
-
-```text
-RSS Sources
-    ↓
-Feed Collector
-    ↓
-Duplicate Detection
-    ↓
-Keyword Categorization
-    ↓
-JSON Storage
-    ↓
-Future: Telegram / Discord / X / Web
-```
+This is a starter data pipeline, not an automated financial-advice system.
 
 ## Setup
 
-Requires Python 3.10+.
+Python 3.10+ is recommended.
 
 ```bash
 cd news-bot
@@ -54,7 +38,7 @@ macOS/Linux:
 source .venv/bin/activate
 ```
 
-Install dependencies:
+Install:
 
 ```bash
 pip install -r requirements.txt
@@ -66,31 +50,63 @@ Run:
 python bot.py
 ```
 
-The output is written to:
+## Output
+
+The bot writes:
 
 ```text
 ../data/news.json
 ```
 
-## Sources
+Example record:
 
-Edit `FEEDS` inside `bot.py` to add or remove RSS sources.
+```json
+{
+  "title": "Example market story",
+  "source": "Example Source",
+  "url": "https://example.com/story",
+  "published_at": "2026-01-01T12:00:00Z",
+  "category": "crypto",
+  "impact_score": 3,
+  "assets": ["BTC"],
+  "summary": "Short source-provided summary.",
+  "collected_at": "2026-01-01T12:05:00Z"
+}
+```
 
-Only use sources whose terms permit the intended use.
+## RSS Sources
 
-The bot stores article metadata and links to the original source. It does not copy full articles.
+The starter configuration includes:
 
-## Future Improvements
+- CoinDesk
+- Cointelegraph
+- Yahoo Finance
 
-- database storage
-- better classification
-- configurable keywords
-- article scoring
-- language detection
-- Telegram alerts
-- Discord alerts
-- X publishing
-- official-source verification
-- tests
-- scheduled execution
+RSS availability and publisher terms can change. Review each publisher's current terms before using the feeds for commercial redistribution.
 
+The bot stores metadata and source links; it should not be used to republish full copyrighted articles.
+
+## Impact Score
+
+The current score is deliberately simple:
+
+- `1` = normal story
+- `3` = contains a market-impact keyword
+- `4` = multiple impact signals
+- `5` = several strong signals
+
+This is **not** a prediction of price movement.
+
+## Next upgrades
+
+Recommended next steps:
+
+1. Store data in SQLite/PostgreSQL.
+2. Add stronger duplicate detection.
+3. Add source reliability metadata.
+4. Add a review queue before publishing.
+5. Generate short summaries with an appropriate LLM/API.
+6. Add Telegram/Discord output.
+7. Add scheduled execution.
+8. Add tests.
+9. Add a web dashboard.
